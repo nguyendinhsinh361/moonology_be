@@ -1,0 +1,25 @@
+conda create -n moonology python=3.11 -y
+conda activate moonology
+conda deactivate
+conda env remove --name moonology
+/opt/anaconda3/envs/moonology/bin/python
+
+python -m app.main
+
+python run.py
+
+ipconfig getifaddr en0
+git rm -r --cached .
+docker system prune -f
+
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+docker-compose restart app
+
+docker-compose restart app
+
+pkill -f "next dev" || true
+lsof -i :3000
+kill -9 76528 
+rm -rf .next
