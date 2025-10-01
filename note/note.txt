@@ -24,3 +24,5 @@ kill -9 76528
 rm -rf .next
 
 docker history moonology_be-app --human=true
+
+ssh -i "~/.ssh/moonology.pem" ubuntu@ec2-44-220-159-66.compute-1.amazonaws.com
