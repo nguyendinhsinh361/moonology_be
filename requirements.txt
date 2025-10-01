@@ -9,7 +9,6 @@ langchain-openai==0.3.18
 langgraph==0.4.7
 langgraph-sdk==0.1.70
 langsmith==0.3.43
-langchain_qdrant>=0.1.0
 uvicorn==0.23.2
 starlette==0.27.0
 mysql-connector-python==8.3.0
@@ -23,14 +22,10 @@ langchain-openai==0.3.18
 langchain-google-genai==2.0.9
 
 # Vector store
-uuid==1.30
-qdrant-client>=1.8.0
-sentence-transformers>=2.2.2
 nest_asyncio>=1.5.8
 
 # Database
 redis>=4.5.0
-redis-om>=0.2.0
 pymongo==4.6.1
 
 # Utilities
@@ -40,8 +35,3 @@ requests==2.31.0
 
 # Production server
 gunicorn
-
-# Development tools (chỉ cài khi cần)
-# flake8==7.0.0
-# black==24.4.2
-# isort==5.13.2

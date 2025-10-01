@@ -4,7 +4,7 @@ Configuration for frontend integration
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
-NEXT_PUBLIC_BACKEND_URL="https://065270077bf7.ngrok-free.app"
+NEXT_PUBLIC_BACKEND_URL="http://localhost:8000"
 
 class FrontendSettings(BaseSettings):
     """Frontend settings"""

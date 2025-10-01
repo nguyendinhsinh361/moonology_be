@@ -16,7 +16,6 @@ from app.core.constants import (
 from app.enum.model import ModelGeminiName, ModelOpenAiName, ModelProvider
 from app.models.llm_models import get_model
 from app.models.memory import get_mongodb_chat_history
-from app.models.vector_store import get_vector_store
 from app.utils.get_moonology_system_prompt import MoonologySystemPromptGenerator
 from app.repositories.chat_user_request import ChatUserRequestRepository
 import logging
@@ -142,27 +141,15 @@ def create_chat_graph():
 
         return state
 
-    # Node 3: Search similar knowledge
+    # Node 3: Search similar knowledge (disabled - no vector store)
     async def search_similar_knowledge(state: ChatState) -> ChatState:
-        """Search for similar messages in vector store and HSK knowledge base."""
+        """Search for similar messages - currently disabled."""
         # Initialize similar_hsk_knowledge if not exists
         if "similar_hsk_knowledge" not in state:
             state["similar_hsk_knowledge"] = []
 
-        # Get vector store for HSK knowledge
-        moonology_vector_store = get_vector_store(collection_name="moonology_knowledge")
-
-        # Search for similar HSK knowledge content
-        similar_hsk_knowledge = moonology_vector_store.search_similar_messages(
-            query=state["user_input"],
-            session_id="hsk_knowledge_base",  # Special session ID for knowledge base
-            k=2,  # Get top 2 most relevant HSK knowledge items
-            filter_type="moonology_knowledge",
-            score_threshold=state["similarity_threshold"],
-        )
-
-        # Store similar messages in state
-        state["similar_hsk_knowledge"] = similar_hsk_knowledge
+        # No vector search - return empty list
+        state["similar_hsk_knowledge"] = []
 
         return state
 

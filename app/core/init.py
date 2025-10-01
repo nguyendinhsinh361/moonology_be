@@ -5,7 +5,6 @@ Application initialization module.
 import logging
 import os
 
-from qdrant_client import QdrantClient
 from app.core.config import settings
 from app.core.constants import DEFAULT_TEMPERATURE
 from app.core.langsmith import get_langsmith_client
@@ -30,8 +29,6 @@ def init_application():
     get_mongodb_client()
 
 
-    # Initialize Qdrant collection if it doesn't exist
-    init_qdrant_collection()
 
     # Clear LangChain environment variables to prevent automatic tracing
     # We'll handle tracing directly through our own code
@@ -72,50 +69,6 @@ def init_application():
     return True
 
 
-def init_qdrant_collection():
-    if not settings.QDRANT_URL:
-        logger.warning("QDRANT_URL is not set. Skipping Qdrant initialization.")
-        return
-
-    try:
-        logger.info(f"QDRANT_URL: {settings.QDRANT_URL}")
-        logger.info(f"QDRANT_API_KEY exists: {bool(settings.QDRANT_API_KEY)}")
-
-        # DEBUG: In ra API key (cẩn thận với production)
-        if settings.QDRANT_API_KEY:
-            logger.info(f"QDRANT_API_KEY first 10 chars: {settings.QDRANT_API_KEY[:10]}...")
-            logger.info(f"QDRANT_API_KEY length: {len(settings.QDRANT_API_KEY)}")
-        else:
-            logger.error("QDRANT_API_KEY is None or empty!")
-            return
-
-        # Test raw HTTP request trước
-        import requests
-
-        headers = {"api-key": settings.QDRANT_API_KEY}
-        response = requests.get(f"{settings.QDRANT_URL}/collections", headers=headers)
-        logger.info(f"Raw HTTP test - Status: {response.status_code}")
-
-        if response.status_code != 200:
-            logger.error(f"Raw HTTP failed: {response.text}")
-            return
-
-        # Sau đó mới dùng QdrantClient
-        client = QdrantClient(
-            url=settings.QDRANT_URL,
-            api_key=settings.QDRANT_API_KEY,
-        )
-
-        client.get_collections().collections
-        logger.info("Successfully connected to Qdrant with QdrantClient")
-
-        # Tiếp tục logic...
-
-    except Exception as e:
-        logger.error(f"Failed to initialize Qdrant collections: {e}")
-        import traceback
-
-        logger.error(traceback.format_exc())
 
 
 def init_langsmith_project(client):
@@ -169,7 +122,6 @@ def preload_models_and_embeddings():
     if (
         not settings.CACHE_EMBEDDINGS
         and not settings.CACHE_MODELS
-        and not settings.CACHE_VECTOR_STORES
     ):
         logger.info("Model caching is disabled. Skipping preloading.")
         return
@@ -192,21 +144,6 @@ def preload_models_and_embeddings():
 
             logger.info("Embedding model preloaded successfully")
 
-        # Initialize vector store client connection if enabled
-        if settings.CACHE_VECTOR_STORES:
-            logger.info("Initializing vector store connection...")
-            from app.models.vector_store import get_vector_store
-
-            # Get the vector store
-            vector_store = get_vector_store()
-
-            # Cache the vector store
-            if redis_cache.enabled:
-                redis_cache.set("vector_store", vector_store, settings.REDIS_CACHE_TTL)
-            else:
-                _MEMORY_CACHE["vector_store"] = vector_store
-
-            logger.info("Vector store connection initialized")
 
         # Preload LLM models if enabled and API keys are available
         if settings.CACHE_MODELS:

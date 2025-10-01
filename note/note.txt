@@ -17,9 +17,10 @@ docker-compose build --no-cache
 docker-compose up -d
 docker-compose restart app
 
-docker-compose restart app
 
 pkill -f "next dev" || true
 lsof -i :3000
 kill -9 76528 
 rm -rf .next
+
+docker history moonology_be-app --human=true

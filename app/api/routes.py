@@ -374,6 +374,7 @@ async def chat(request: ChatRequest = Body(...), request_obj: Request = None):
             
             
         # Use graph-based chat (removed simple chain option)
+
         response, session_id = chat_with_graph(
             request.user_input,
             request.session_id,

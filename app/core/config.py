@@ -42,10 +42,6 @@ class Settings(BaseModel):
     )
     DEFAULT_MODEL_PROVIDER: str = os.getenv("DEFAULT_MODEL_PROVIDER", DEFAULT_MODEL_PROVIDER)
 
-    # Qdrant settings
-    QDRANT_URL: str = os.getenv("QDRANT_URL")
-    QDRANT_API_KEY: str = os.getenv("QDRANT_API_KEY")
-    QDRANT_COLLECTION_NAME: str = os.getenv("QDRANT_COLLECTION_NAME")
 
     # LangSmith settings
     LANGSMITH_API_KEY: Optional[str] = os.getenv("LANGSMITH_API_KEY")
@@ -62,7 +58,6 @@ class Settings(BaseModel):
     # Cache settings
     CACHE_EMBEDDINGS: bool = os.getenv("CACHE_EMBEDDINGS", "true").lower() == "true"
     CACHE_MODELS: bool = os.getenv("CACHE_MODELS", "true").lower() == "true"
-    CACHE_VECTOR_STORES: bool = os.getenv("CACHE_VECTOR_STORES", "true").lower() == "true"
     CACHE_GRAPHS: bool = os.getenv("CACHE_GRAPHS", "true").lower() == "true"
 
     model_config = {"env_file": ".env", "case_sensitive": True, "extra": "forbid"}
