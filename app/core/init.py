@@ -62,8 +62,6 @@ def init_application():
     # Initialize Redis cache
     init_redis_cache()
 
-    # Pre-initialize models and embeddings
-    preload_models_and_embeddings()
 
     logger.info("Application initialized successfully.")
     return True
@@ -114,81 +112,6 @@ def init_redis_cache():
     else:
         logger.warning("Redis cache is not available. Using in-memory cache as fallback.")
 
-
-def preload_models_and_embeddings():
-    """
-    Preload and cache models and embeddings to reduce initialization time on first API call.
-    """
-    if (
-        not settings.CACHE_EMBEDDINGS
-        and not settings.CACHE_MODELS
-    ):
-        logger.info("Model caching is disabled. Skipping preloading.")
-        return
-
-    try:
-        # Preload embedding model if enabled
-        if settings.CACHE_EMBEDDINGS:
-            logger.info("Preloading embedding model...")
-            # Import here to avoid circular imports
-            from app.models.embedding import get_embeddings
-
-            # Get the embedding model
-            embeddings = get_embeddings()
-
-            # Cache the embedding model
-            if redis_cache.enabled:
-                redis_cache.set("embeddings", embeddings, settings.REDIS_CACHE_TTL)
-            else:
-                _MEMORY_CACHE["embeddings"] = embeddings
-
-            logger.info("Embedding model preloaded successfully")
-
-
-        # Preload LLM models if enabled and API keys are available
-        if settings.CACHE_MODELS:
-            if settings.DEFAULT_MODEL_PROVIDER == "gemini" and settings.GOOGLE_API_KEY:
-                logger.info("Preloading Gemini model...")
-                from app.enum.model import ModelGeminiName
-                from app.models.llm_models import get_gemini_model
-
-                # Get the model with default settings
-                gemini_model = get_gemini_model(
-                    model_name=ModelGeminiName.GEMINI_2_5_FLASH_LITE,
-                    temperature=DEFAULT_TEMPERATURE,
-                    run_name="preloaded-gemini",
-                )
-
-                # Cache the model
-                if redis_cache.enabled:
-                    redis_cache.set("gemini_model", gemini_model, settings.REDIS_CACHE_TTL)
-                else:
-                    _MEMORY_CACHE["gemini_model"] = gemini_model
-
-                logger.info("Gemini model preloaded successfully")
-
-            elif settings.DEFAULT_MODEL_PROVIDER == "openai" and settings.OPENAI_API_KEY:
-                logger.info("Preloading OpenAI model...")
-                from app.enum.model import ModelOpenAiName
-                from app.models.llm_models import get_openai_model
-
-                # Get the model with default settings
-                openai_model = get_openai_model(
-                    model_name=ModelOpenAiName.OPENAI_GPT_5_NANO,
-                    run_name="preloaded-openai",
-                )
-
-                # Cache the model
-                if redis_cache.enabled:
-                    redis_cache.set("openai_model", openai_model, settings.REDIS_CACHE_TTL)
-                else:
-                    _MEMORY_CACHE["openai_model"] = openai_model
-
-                logger.info("OpenAI model preloaded successfully")
-
-    except Exception as e:
-        logger.error(f"Error preloading models: {e}")
-        logger.info("Continuing without preloaded models")
 
 
 def get_cached_model(key):
