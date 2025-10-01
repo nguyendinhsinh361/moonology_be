@@ -27,3 +27,7 @@ docker history moonology_be-app --human=true
 
 ssh -i "~/.ssh/moonology.pem" ubuntu@ec2-44-220-159-66.compute-1.amazonaws.com
 docker image prune -f
+
+docker build -t moonology_fe .
+
+docker run -d -p 3000:3000 moonology_fe
