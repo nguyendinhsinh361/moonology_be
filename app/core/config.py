@@ -59,6 +59,9 @@ class Settings(BaseModel):
     CACHE_EMBEDDINGS: bool = os.getenv("CACHE_EMBEDDINGS", "true").lower() == "true"
     CACHE_MODELS: bool = os.getenv("CACHE_MODELS", "true").lower() == "true"
     CACHE_GRAPHS: bool = os.getenv("CACHE_GRAPHS", "true").lower() == "true"
+    
+    # Frontend settings
+    NEXT_PUBLIC_BACKEND_URL: str = os.getenv("NEXT_PUBLIC_BACKEND_URL")
 
     model_config = {"env_file": ".env", "case_sensitive": True, "extra": "forbid"}
 

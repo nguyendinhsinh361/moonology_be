@@ -6,7 +6,6 @@ import logging
 import os
 
 from app.core.config import settings
-from app.core.constants import DEFAULT_TEMPERATURE
 from app.core.langsmith import get_langsmith_client
 from app.core.redis_cache import redis_cache
 from app.repositories.mongodb import get_mongodb_client
