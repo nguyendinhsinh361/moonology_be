@@ -14,6 +14,10 @@ DEFAULT_REDIS_NAMESPACE = "moonology"
 DEFAULT_REDIS_CACHE_TTL = 86400  # 24 hours in seconds
 DEFAULT_REDIS_URL = "redis://redis:6379/0"
 
+# Cache settings for performance
+ENABLE_RESPONSE_CACHING = True
+RESPONSE_CACHE_TTL = 3600  # 1 hour in seconds
+
 # Vector search settings
 DEFAULT_SIMILARITY_THRESHOLD = 0.3
 

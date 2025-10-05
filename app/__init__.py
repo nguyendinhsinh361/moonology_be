@@ -8,6 +8,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from app.middlewares.cache import ResponseCacheMiddleware
+
 __version__ = "0.1.0"
 
 from app.api.routes import root_router
@@ -39,6 +41,9 @@ def create_app():
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    
+    # Add response caching middleware
+    app.add_middleware(ResponseCacheMiddleware)
 
     # Include API router
     app.include_router(api_router, tags=["Chat Graph"])
