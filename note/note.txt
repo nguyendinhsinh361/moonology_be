@@ -33,3 +33,9 @@ docker image prune -f
 docker build -t moonology_fe .
 
 docker run -d -p 3000:3000 moonology_fe
+
+chmod +x setup-docker.sh ec2-nginx-config.sh deploy.sh
+./setup-docker.sh
+newgrp docker  # Để áp dụng quyền Docker mà không cần đăng xuất
+./ec2-nginx-config.sh
+./deploy.sh
