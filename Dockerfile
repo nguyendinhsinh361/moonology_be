@@ -39,5 +39,5 @@ USER appuser
 
 EXPOSE 8000
 
-# Cấu hình tối ưu cho t3.small
-CMD ["gunicorn", "app.main:app", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--worker-connections", "500", "--timeout", "120", "--keep-alive", "5", "--max-requests", "1000", "--max-requests-jitter", "50", "--bind", "0.0.0.0:8000"]
+# Giảm số workers từ 4 xuống 2 cho t3.small
+CMD ["gunicorn", "app.main:app", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
